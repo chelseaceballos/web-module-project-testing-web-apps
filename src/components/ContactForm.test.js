@@ -94,13 +94,96 @@ test('renders "email must be a valid email address" if an invalid email is enter
 });
 //7 -------------------------------------
 test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
-    
+//Arrange
+    render(<ContactForm/>);
+// - select fNameInput 
+    // - user types "Chelsea"
+    const fNameInput = screen.getByLabelText("First Name*");
+        userEvent.type(fNameInput, "Chelsea");
+    // does not type Last Name
+    // - select emailInput 
+    // - user types "chelsea123@gmail.com" 
+    const emailInput = screen.getByLabelText("Email*");
+        userEvent.type(emailInput, 'Chelsea123@gmail.com');
+    // - user clicks on submit
+    const button = screen.getByRole('button');
+            userEvent.click(button);
+// Assert    
+     const err = await screen.findByTestId(/error/i);
+    expect(err).toBeInTheDocument(); 
 });
 //8 -------------------------------------
 test('renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.', async () => {
+// Arrange
+render(<ContactForm/>);
+// Act
+    // - select fNameInput 
+    // - user types "Chelsea"
+    const fNameInput = screen.getByLabelText("First Name*");
+        userEvent.type(fNameInput, "Chelsea");
+    // - select lNameInput 
+    // - user types "Ceballos"
+    const lNameInput = screen.getByLabelText("Last Name*");
+        userEvent.type(lNameInput, "Ceballos");
+    // - select emailInput 
+    // - user types "chelsea123@gmail.com"
+    const emailInput = screen.getByLabelText("Email*");
+        userEvent.type(emailInput, 'Chelsea123@gmail.com');
+    // Does not type Message
+    // - user clicks on submit
+    const button = screen.getByRole('button');
+        userEvent.click(button);
+
+// Assert  - verify that all inputs filled are rendering on page except message, be it is to NOT.toBeInTheDocument
+    const newFName = await screen.findByTestId('firstnameDisplay');
+        expect(newFName).toBeInTheDocument();
+
+    const newLName = await screen.findByTestId('lastnameDisplay');
+        expect(newLName).toBeInTheDocument();
+
+    const newEmail = await screen.findByTestId('emailDisplay');
+        expect(newEmail).toBeInTheDocument();
     
+    const newMessage = await screen.queryByTestId('messageDisplay');
+        expect(newMessage).not.toBeInTheDocument();
 });
+
 //9 -------------------------------------
 test('renders all fields text when all fields are submitted.', async () => {
+// Arrange
+render(<ContactForm/>);
+// Act
+    // - select fNameInput 
+    // - user types "Chelsea"
+    const fNameInput = screen.getByLabelText("First Name*");
+        userEvent.type(fNameInput, "Chelsea");
+    // - select lNameInput 
+    // - user types "Ceballos"
+    const lNameInput = screen.getByLabelText("Last Name*");
+        userEvent.type(lNameInput, "Ceballos");
+    // - select emailInput 
+    // - user types "chelsea123@gmail.com"
+    const emailInput = screen.getByLabelText("Email*");
+        userEvent.type(emailInput, 'Chelsea123@gmail.com');
+    // - select messageInput 
+    // - user types "Hi! My name is Chucky!"
+    const messageInput = screen.getByLabelText("Message");
+        userEvent.type(messageInput, 'Hi! My name is Chucky!');
+    // - user clicks on submit
+    const button = screen.getByRole('button');
+        userEvent.click(button);
+
+// Assert  - verify that all inputs filled are rendering on page except message, be it is to NOT.toBeInTheDocument
+    const newFName = await screen.findByTestId('firstnameDisplay');
+        expect(newFName).toBeInTheDocument();
+
+    const newLName = await screen.findByTestId('lastnameDisplay');
+        expect(newLName).toBeInTheDocument();
+
+    const newEmail = await screen.findByTestId('emailDisplay');
+        expect(newEmail).toBeInTheDocument();
+    
+    const newMessage = await screen.findByTestId('messageDisplay');
+        expect(newMessage).toBeInTheDocument();
     
 });
